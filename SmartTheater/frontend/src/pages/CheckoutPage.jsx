@@ -1,10 +1,22 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useBooking } from '../contexts/BookingContext';
 import { api } from '../services/api';
 import BookingStepper from '../components/BookingStepper';
-import { Clock, ShieldCheck, CheckCircle2, Lock, CreditCard, Smartphone, Building, Tag, AlertCircle } from 'lucide-react';
+import {
+  Clock,
+  ShieldCheck,
+  CheckCircle2,
+  Lock,
+  CreditCard,
+  Smartphone,
+  Building2,
+  Mail,
+  Phone,
+  Headphones,
+  Check
+} from 'lucide-react';
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
@@ -27,17 +39,15 @@ export default function CheckoutPage() {
   const [promoCode, setPromoCode] = useState('');
   const [promoApplied, setPromoApplied] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
 
-  // Fallbacks matching prototype
   const movieTitle = selectedMovie?.title || 'The Last Orbit';
   const seatsSummary = selectedSeats.length > 0
     ? selectedSeats.map((s) => s.seat_label).join(', ')
     : 'H7, H8';
-  const seatsCount = selectedSeats.length || 2;
-  const isPremium = selectedSeats[0]?.seat_type === 'premium' || true;
+  const totalDisplay = (totalAmount > 0 ? totalAmount : 687.2).toFixed(2);
+  const ticketsSubtotalDisplay = (ticketSubtotal > 0 ? ticketSubtotal : 640).toFixed(2);
 
-  const handleVerifyUpi = () => {
+  const handleVerify = () => {
     if (upiId.includes('@')) {
       setUpiVerified(true);
     } else {
@@ -46,7 +56,7 @@ export default function CheckoutPage() {
   };
 
   const handleApplyPromo = () => {
-    if (promoCode.toUpperCase() === 'SMART50') {
+    if (promoCode.trim().toUpperCase() === 'SMART50') {
       setPromoApplied(true);
     } else {
       alert('Invalid promo code. Try "SMART50"');
@@ -55,15 +65,13 @@ export default function CheckoutPage() {
 
   const handlePayAndConfirm = async () => {
     if (!agreeTerms) {
-      setErrorMsg('Please accept the booking terms to proceed.');
+      alert('Please accept the booking terms to proceed.');
       return;
     }
 
     setIsProcessing(true);
-    setErrorMsg('');
 
     try {
-      // Create actual booking record via backend API
       const payload = {
         show_id: selectedShow?.id || 'demo-show-id',
         seat_ids: selectedSeats.map((s) => s.id),
@@ -74,7 +82,7 @@ export default function CheckoutPage() {
       };
 
       let bookingRef = 'ST-261016-0842';
-      let bookingId = 'demo-booking-1';
+      let bookingId = 'ST-261016-0842';
 
       try {
         const res = await api.createBooking(payload);
@@ -83,10 +91,9 @@ export default function CheckoutPage() {
           bookingRef = res.reference || bookingRef;
         }
       } catch (backendErr) {
-        console.warn('Real booking failed (falling back to prototype simulated confirmation):', backendErr);
+        console.warn('Real booking failed, proceeding to prototype confirmation:', backendErr);
       }
 
-      // Navigate to digital ticket screen
       navigate(`/booking/confirmation/${bookingId}`, {
         state: {
           bookingRef,
@@ -96,14 +103,12 @@ export default function CheckoutPage() {
           showDate: 'Fri, 16 Oct 2026',
           showTime: '7:30 PM',
           seats: seatsSummary,
-          amountPaid: totalAmount > 0 ? totalAmount : 687.2,
-          customerName: user?.full_name || 'Arjun Shah',
+          amountPaid: totalDisplay,
+          customerName: user?.full_name ? user.full_name.split(' ')[0] : 'Arjun',
           customerEmail: user?.email || 'arjun.shah@gmail.com',
           customerMobile: '+91 98765 43210',
         },
       });
-    } catch (err) {
-      setErrorMsg(err.message || 'Payment simulation failed. Please try again.');
     } finally {
       setIsProcessing(false);
     }
@@ -114,495 +119,517 @@ export default function CheckoutPage() {
       {/* ── STEPPER (Step 3 Active) ── */}
       <BookingStepper currentStep={3} />
 
-      <div className="container" style={{ maxWidth: '1080px', margin: '0 auto' }}>
-        {/* Header */}
-        <div style={{ marginBottom: '32px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
-            <div>
-              <h1 style={{ fontSize: '2.1rem', fontWeight: 800, marginBottom: '6px' }}>
-                One last step to movie night.
-              </h1>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>
-                Review your details and pay securely. Your seats {seatsSummary} are on hold.
-              </p>
-            </div>
-
-            {/* Timer pill */}
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              background: 'rgba(239, 68, 68, 0.12)',
-              border: '1px solid rgba(239, 68, 68, 0.35)',
-              color: '#fca5a5',
-              padding: '6px 16px',
-              borderRadius: 'var(--radius-full)',
-              fontSize: '0.85rem',
-              fontWeight: 600,
-            }}>
-              <Clock size={15} color="#ef4444" />
-              <span>Seats held for {formattedTimer()}</span>
-            </div>
-          </div>
+      {/* ── HEADER & COUNTDOWN TIMER ── */}
+      <div className="container" style={{
+        display: 'flex',
+        alignItems: 'flex-start',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '16px',
+        marginBottom: '28px',
+      }}>
+        <div>
+          <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '6px' }}>
+            One last step to movie night.
+          </h1>
+          <p style={{ fontSize: '0.92rem', color: 'var(--text-muted)' }}>
+            Review your details and pay securely. Your seats {seatsSummary} are on hold.
+          </p>
         </div>
 
-        {errorMsg && (
-          <div style={{
-            background: 'var(--danger-soft)',
-            border: '1px solid var(--danger)',
-            color: '#fca5a5',
-            padding: '12px 18px',
-            borderRadius: 'var(--radius-md)',
-            marginBottom: '24px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-          }}>
-            <AlertCircle size={18} />
-            <span>{errorMsg}</span>
-          </div>
-        )}
+        {/* Hold timer pill from PDF */}
+        <div style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '8px',
+          background: 'var(--warning-soft)',
+          border: '1px solid var(--warning-border)',
+          color: 'var(--warning-text)',
+          padding: '8px 16px',
+          borderRadius: 'var(--radius-md)',
+          fontSize: '0.86rem',
+          fontWeight: 600,
+        }}>
+          <Clock size={16} />
+          <span>Seats held for {formattedTimer()}</span>
+        </div>
+      </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.4fr) minmax(320px, 1fr)', gap: '32px' }}>
-          {/* ── LEFT COLUMN: CONTACT DETAILS & PAYMENT METHOD ── */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
-            {/* Contact Details Card */}
-            <div className="glass-panel" style={{ padding: '24px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Contact details</h3>
-                <span style={{ fontSize: '0.8rem', color: 'var(--gold)', fontWeight: 600 }}>
+      {/* ── MAIN CHECKOUT WORKSPACE (2 Column Layout) ── */}
+      <div className="container">
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 390px',
+          gap: '32px',
+          alignItems: 'start',
+        }}>
+          {/* Left Column: Contact + Payment Details */}
+          <div>
+            {/* Card 1: Contact Details */}
+            <div className="card" style={{ padding: '24px', marginBottom: '20px' }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '6px',
+              }}>
+                <h3 style={{ fontSize: '1.12rem', fontWeight: 700 }}>Contact details</h3>
+                <span style={{
+                  background: 'var(--teal-soft)',
+                  color: 'var(--teal-primary)',
+                  fontSize: '0.74rem',
+                  fontWeight: 600,
+                  padding: '3px 10px',
+                  borderRadius: 'var(--radius-full)',
+                }}>
                   Signed in as {user?.full_name || 'Arjun Shah'}
                 </span>
               </div>
-              <p style={{ fontSize: '0.82rem', color: 'var(--text-dim)', marginBottom: '16px' }}>
+              <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginBottom: '18px' }}>
                 Your digital ticket will be sent to these details.
               </p>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              {/* Two input columns */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '16px',
+              }}>
                 <div>
-                  <label style={{ fontSize: '0.78rem', color: 'var(--text-dim)', display: 'block', marginBottom: '6px' }}>
+                  <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, marginBottom: '6px', color: 'var(--text-main)' }}>
                     Email address
                   </label>
-                  <input
-                    type="email"
-                    readOnly
-                    value={user?.email || 'arjun.shah@gmail.com'}
-                    style={{
-                      width: '100%',
-                      padding: '10px 14px',
-                      background: 'var(--bg-primary)',
-                      border: '1px solid var(--border-medium)',
-                      borderRadius: '8px',
-                      color: 'var(--text-main)',
-                      fontSize: '0.88rem',
-                    }}
-                  />
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    border: '1px solid var(--border-medium)',
+                    borderRadius: 'var(--radius-md)',
+                    padding: '10px 14px',
+                    background: 'var(--bg-card)',
+                  }}>
+                    <input
+                      type="email"
+                      defaultValue={user?.email || 'arjun.shah@gmail.com'}
+                      style={{
+                        border: 'none',
+                        outline: 'none',
+                        background: 'transparent',
+                        fontSize: '0.88rem',
+                        width: '100%',
+                        color: 'var(--text-main)',
+                      }}
+                    />
+                    <Mail size={16} color="var(--text-muted)" />
+                  </div>
                 </div>
+
                 <div>
-                  <label style={{ fontSize: '0.78rem', color: 'var(--text-dim)', display: 'block', marginBottom: '6px' }}>
+                  <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, marginBottom: '6px', color: 'var(--text-main)' }}>
                     Mobile number
                   </label>
-                  <input
-                    type="tel"
-                    readOnly
-                    value="+91 98765 43210"
-                    style={{
-                      width: '100%',
-                      padding: '10px 14px',
-                      background: 'var(--bg-primary)',
-                      border: '1px solid var(--border-medium)',
-                      borderRadius: '8px',
-                      color: 'var(--text-main)',
-                      fontSize: '0.88rem',
-                    }}
-                  />
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    border: '1px solid var(--border-medium)',
+                    borderRadius: 'var(--radius-md)',
+                    padding: '10px 14px',
+                    background: 'var(--bg-card)',
+                  }}>
+                    <input
+                      type="tel"
+                      defaultValue="+91 98765 43210"
+                      style={{
+                        border: 'none',
+                        outline: 'none',
+                        background: 'transparent',
+                        fontSize: '0.88rem',
+                        width: '100%',
+                        color: 'var(--text-main)',
+                      }}
+                    />
+                    <Phone size={16} color="var(--text-muted)" />
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Payment Method Card */}
-            <div className="glass-panel" style={{ padding: '24px' }}>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '18px' }}>
-                Payment method
-              </h3>
+            {/* Card 2: Payment Method */}
+            <div className="card" style={{ padding: '24px', marginBottom: '20px' }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '18px',
+              }}>
+                <h3 style={{ fontSize: '1.12rem', fontWeight: 700 }}>Payment method</h3>
+                <span style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  color: 'var(--teal-primary)',
+                  fontSize: '0.78rem',
+                  fontWeight: 600,
+                }}>
+                  <ShieldCheck size={15} />
+                  <span>100% secure</span>
+                </span>
+              </div>
 
-              {/* Tabs */}
-              <div style={{ display: 'flex', gap: '10px', marginBottom: '22px' }}>
+              {/* Payment Tabs: UPI, Card, Net Banking */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: '12px',
+                marginBottom: '20px',
+              }}>
                 <button
-                  type="button"
                   onClick={() => setPaymentMethod('upi')}
                   style={{
-                    flex: 1,
-                    padding: '12px',
-                    borderRadius: '8px',
-                    background: paymentMethod === 'upi' ? 'var(--gold-soft)' : 'var(--bg-primary)',
-                    color: paymentMethod === 'upi' ? 'var(--gold)' : 'var(--text-muted)',
-                    border: paymentMethod === 'upi' ? '1px solid var(--gold)' : '1px solid var(--border-subtle)',
-                    fontWeight: 600,
-                    fontSize: '0.88rem',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px',
+                    justifyContent: 'space-between',
+                    padding: '12px 16px',
+                    borderRadius: 'var(--radius-md)',
+                    border: paymentMethod === 'upi' ? '1.5px solid var(--teal-primary)' : '1px solid var(--border-subtle)',
+                    background: paymentMethod === 'upi' ? 'var(--teal-soft)' : 'var(--bg-card)',
+                    color: paymentMethod === 'upi' ? 'var(--teal-primary)' : 'var(--text-main)',
+                    fontWeight: 600,
+                    fontSize: '0.88rem',
                   }}
                 >
-                  <Smartphone size={16} /> UPI
+                  <span>UPI</span>
+                  {paymentMethod === 'upi' && <Check size={16} color="var(--teal-primary)" />}
                 </button>
 
                 <button
-                  type="button"
                   onClick={() => setPaymentMethod('card')}
                   style={{
-                    flex: 1,
-                    padding: '12px',
-                    borderRadius: '8px',
-                    background: paymentMethod === 'card' ? 'var(--gold-soft)' : 'var(--bg-primary)',
-                    color: paymentMethod === 'card' ? 'var(--gold)' : 'var(--text-muted)',
-                    border: paymentMethod === 'card' ? '1px solid var(--gold)' : '1px solid var(--border-subtle)',
-                    fontWeight: 600,
-                    fontSize: '0.88rem',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
                     gap: '8px',
+                    padding: '12px 16px',
+                    borderRadius: 'var(--radius-md)',
+                    border: paymentMethod === 'card' ? '1.5px solid var(--teal-primary)' : '1px solid var(--border-subtle)',
+                    background: paymentMethod === 'card' ? 'var(--teal-soft)' : 'var(--bg-card)',
+                    color: paymentMethod === 'card' ? 'var(--teal-primary)' : 'var(--text-main)',
+                    fontWeight: 500,
+                    fontSize: '0.86rem',
                   }}
                 >
-                  <CreditCard size={16} /> Credit / debit card
+                  <CreditCard size={16} />
+                  <span>Credit / debit card</span>
                 </button>
 
                 <button
-                  type="button"
                   onClick={() => setPaymentMethod('netbanking')}
                   style={{
-                    flex: 1,
-                    padding: '12px',
-                    borderRadius: '8px',
-                    background: paymentMethod === 'netbanking' ? 'var(--gold-soft)' : 'var(--bg-primary)',
-                    color: paymentMethod === 'netbanking' ? 'var(--gold)' : 'var(--text-muted)',
-                    border: paymentMethod === 'netbanking' ? '1px solid var(--gold)' : '1px solid var(--border-subtle)',
-                    fontWeight: 600,
-                    fontSize: '0.88rem',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
                     gap: '8px',
+                    padding: '12px 16px',
+                    borderRadius: 'var(--radius-md)',
+                    border: paymentMethod === 'netbanking' ? '1.5px solid var(--teal-primary)' : '1px solid var(--border-subtle)',
+                    background: paymentMethod === 'netbanking' ? 'var(--teal-soft)' : 'var(--bg-card)',
+                    color: paymentMethod === 'netbanking' ? 'var(--teal-primary)' : 'var(--text-main)',
+                    fontWeight: 500,
+                    fontSize: '0.86rem',
                   }}
                 >
-                  <Building size={16} /> Net banking
+                  <Building2 size={16} />
+                  <span>Net banking</span>
                 </button>
               </div>
 
-              {/* UPI Tab View */}
+              {/* UPI ID Field & Verification */}
               {paymentMethod === 'upi' && (
-                <div>
-                  <label style={{ fontSize: '0.82rem', color: 'var(--text-dim)', display: 'block', marginBottom: '8px' }}>
+                <div style={{ marginBottom: '22px' }}>
+                  <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, marginBottom: '6px', color: 'var(--text-main)' }}>
                     UPI ID
                   </label>
-                  <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
+                  <div style={{ display: 'flex', gap: '10px', marginBottom: '8px' }}>
                     <input
                       type="text"
                       value={upiId}
                       onChange={(e) => setUpiId(e.target.value)}
-                      placeholder="e.g. arjun.shah@okhdfcbank"
+                      placeholder="username@bank"
                       style={{
                         flex: 1,
-                        padding: '12px 14px',
-                        background: 'var(--bg-primary)',
                         border: '1px solid var(--border-medium)',
-                        borderRadius: '8px',
+                        borderRadius: 'var(--radius-md)',
+                        padding: '10px 14px',
+                        fontSize: '0.9rem',
+                        background: 'var(--bg-card)',
                         color: 'var(--text-main)',
-                        fontSize: '0.92rem',
+                        outline: 'none',
                       }}
                     />
                     <button
-                      type="button"
-                      onClick={handleVerifyUpi}
-                      className="btn-secondary"
-                      style={{ padding: '0 20px', fontSize: '0.88rem' }}
+                      onClick={handleVerify}
+                      className="btn-outline"
+                      style={{ padding: '8px 18px', fontSize: '0.86rem' }}
                     >
                       Verify
                     </button>
                   </div>
 
+                  <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '10px' }}>
+                    A payment request will be sent to your UPI app.
+                  </div>
+
                   {upiVerified && (
                     <div style={{
-                      display: 'flex',
+                      display: 'inline-flex',
                       alignItems: 'center',
                       gap: '6px',
-                      color: '#6ee7b7',
-                      fontSize: '0.82rem',
+                      background: 'var(--teal-soft)',
+                      color: 'var(--teal-primary)',
+                      fontSize: '0.78rem',
                       fontWeight: 600,
-                      marginBottom: '10px',
+                      padding: '4px 10px',
+                      borderRadius: 'var(--radius-full)',
                     }}>
-                      <CheckCircle2 size={15} />
+                      <CheckCircle2 size={14} />
                       <span>UPI ID verified · Arjun Shah</span>
                     </div>
                   )}
-                  <p style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>
-                    A payment request will be sent to your UPI app.
-                  </p>
                 </div>
               )}
-
-              {/* Card View */}
-              {paymentMethod === 'card' && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <input
-                    type="text"
-                    placeholder="Card Number (4532 •••• •••• 8892)"
-                    defaultValue="4532 8901 2345 8892"
-                    style={{
-                      width: '100%',
-                      padding: '12px 14px',
-                      background: 'var(--bg-primary)',
-                      border: '1px solid var(--border-medium)',
-                      borderRadius: '8px',
-                      color: 'var(--text-main)',
-                    }}
-                  />
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                    <input
-                      type="text"
-                      placeholder="MM/YY"
-                      defaultValue="08/28"
-                      style={{
-                        padding: '12px 14px',
-                        background: 'var(--bg-primary)',
-                        border: '1px solid var(--border-medium)',
-                        borderRadius: '8px',
-                        color: 'var(--text-main)',
-                      }}
-                    />
-                    <input
-                      type="password"
-                      placeholder="CVV"
-                      defaultValue="892"
-                      style={{
-                        padding: '12px 14px',
-                        background: 'var(--bg-primary)',
-                        border: '1px solid var(--border-medium)',
-                        borderRadius: '8px',
-                        color: 'var(--text-main)',
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Netbanking View */}
-              {paymentMethod === 'netbanking' && (
-                <div>
-                  <select
-                    style={{
-                      width: '100%',
-                      padding: '12px 14px',
-                      background: 'var(--bg-primary)',
-                      border: '1px solid var(--border-medium)',
-                      borderRadius: '8px',
-                      color: 'var(--text-main)',
-                    }}
-                  >
-                    <option>HDFC Bank</option>
-                    <option>ICICI Bank</option>
-                    <option>State Bank of India</option>
-                    <option>Axis Bank</option>
-                  </select>
-                </div>
-              )}
-
-              {/* Promo Code Box */}
-              <div style={{
-                marginTop: '24px',
-                paddingTop: '20px',
-                borderTop: '1px solid var(--border-subtle)',
-              }}>
-                <label style={{ fontSize: '0.8rem', color: 'var(--text-dim)', display: 'block', marginBottom: '8px' }}>
-                  Have a promo code?
-                </label>
-                <div style={{ display: 'flex', gap: '10px' }}>
-                  <input
-                    type="text"
-                    placeholder="Enter code (try SMART50)"
-                    value={promoCode}
-                    onChange={(e) => setPromoCode(e.target.value)}
-                    style={{
-                      flex: 1,
-                      padding: '10px 14px',
-                      background: 'var(--bg-primary)',
-                      border: '1px solid var(--border-subtle)',
-                      borderRadius: '8px',
-                      color: 'var(--text-main)',
-                      fontSize: '0.85rem',
-                      textTransform: 'uppercase',
-                    }}
-                  />
-                  <button
-                    type="button"
-                    onClick={handleApplyPromo}
-                    className="btn-secondary"
-                    style={{ padding: '0 18px', fontSize: '0.85rem' }}
-                  >
-                    Apply
-                  </button>
-                </div>
-                {promoApplied && (
-                  <div style={{ color: 'var(--gold)', fontSize: '0.8rem', marginTop: '6px', fontWeight: 600 }}>
-                    Promo SMART50 applied! ₹50 discounted.
-                  </div>
-                )}
-              </div>
 
               {/* Terms Checkbox */}
-              <div style={{ marginTop: '24px', display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '10px',
+                paddingTop: '16px',
+                borderTop: '1px solid var(--border-subtle)',
+                marginBottom: '20px',
+              }}>
                 <input
                   type="checkbox"
-                  id="agree"
+                  id="agree-terms"
                   checked={agreeTerms}
                   onChange={(e) => setAgreeTerms(e.target.checked)}
-                  style={{ marginTop: '3px', accentColor: 'var(--gold)', width: '16px', height: '16px' }}
+                  style={{ marginTop: '3px', accentColor: 'var(--teal-primary)' }}
                 />
-                <label htmlFor="agree" style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
+                <label htmlFor="agree-terms" style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.45, cursor: 'pointer' }}>
                   I agree to the booking terms and cancellation policy. I understand that the convenience fee is non-refundable.
                 </label>
               </div>
 
-              {/* Action Button */}
+              {/* Confirm & Pay Button */}
               <button
-                type="button"
                 onClick={handlePayAndConfirm}
                 disabled={isProcessing}
-                className="btn-primary"
+                className="btn-navy"
                 style={{
                   width: '100%',
-                  padding: '16px',
-                  fontSize: '1.05rem',
-                  marginTop: '24px',
+                  padding: '13px',
+                  fontSize: '0.96rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  marginBottom: '14px',
                 }}
               >
-                <Lock size={18} />
-                {isProcessing ? 'Processing simulated payment...' : `Pay ₹${totalAmount > 0 ? totalAmount.toFixed(2) : '687.20'} & confirm booking`}
+                <Lock size={16} />
+                <span>Pay ₹{totalDisplay} & confirm booking</span>
               </button>
 
-              {/* Security info */}
               <div style={{
                 textAlign: 'center',
-                fontSize: '0.74rem',
+                fontSize: '0.76rem',
                 color: 'var(--text-dim)',
-                marginTop: '14px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
               }}>
-                <ShieldCheck size={14} color="#10b981" />
-                <span>Powered by Razorpay · Encrypted payment · No card details stored · 100% secure</span>
+                Powered by Razorpay · Encrypted payment · No card details stored
               </div>
+            </div>
+
+            {/* Card 3: Refund Policy Notice */}
+            <div className="card" style={{ padding: '20px 24px' }}>
+              <h4 style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: '6px' }}>
+                Plans can change. We understand.
+              </h4>
+              <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
+                Cancel before 5:30 PM on 16 Oct for a refund of the ₹{ticketsSubtotalDisplay} ticket amount. Convenience fee and GST are non-refundable.
+              </p>
             </div>
           </div>
 
-          {/* ── RIGHT COLUMN: ORDER SUMMARY ── */}
-          <div>
-            <div className="glass-panel" style={{
-              padding: '28px',
-              position: 'sticky',
-              top: '90px',
-              background: 'linear-gradient(135deg, rgba(24, 32, 50, 0.95), rgba(15, 23, 42, 0.95))',
-            }}>
+          {/* Right Column: Sticky Summary & Promo */}
+          <div style={{ position: 'sticky', top: '96px' }}>
+            <div className="card" style={{ padding: '24px', marginBottom: '20px' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '16px' }}>
+                Your evening, reserved.
+              </h3>
+
+              {/* Movie info snippet */}
               <div style={{
-                fontSize: '0.72rem',
-                fontWeight: 700,
-                textTransform: 'uppercase',
-                color: 'var(--gold)',
-                letterSpacing: '0.06em',
-                marginBottom: '6px',
+                display: 'flex',
+                gap: '14px',
+                paddingBottom: '16px',
+                borderBottom: '1px solid var(--border-subtle)',
+                marginBottom: '16px',
               }}>
-                YOUR EVENING, RESERVED.
-              </div>
-              <h2 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '6px' }}>
-                {movieTitle}
-              </h2>
-              <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: '18px' }}>
-                U/A 13+ · English · 2h 18m · IMAX 2D
+                <img
+                  src="/images/last_orbit.jpg"
+                  alt={movieTitle}
+                  style={{
+                    width: '64px',
+                    height: '84px',
+                    borderRadius: 'var(--radius-sm)',
+                    objectFit: 'cover',
+                  }}
+                />
+                <div>
+                  <h4 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '4px' }}>
+                    {movieTitle}
+                  </h4>
+                  <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '8px' }}>
+                    U/A 13+ · English · 2h 18m
+                  </div>
+                  <span style={{
+                    background: 'var(--teal-soft)',
+                    color: 'var(--teal-primary)',
+                    fontSize: '0.72rem',
+                    fontWeight: 700,
+                    padding: '2px 8px',
+                    borderRadius: 'var(--radius-xs)',
+                  }}>
+                    IMAX 2D
+                  </span>
+                </div>
               </div>
 
-              {/* Show & Venue info */}
+              {/* Theater & Showtime */}
               <div style={{
-                background: 'var(--bg-primary)',
-                padding: '16px',
-                borderRadius: '8px',
-                border: '1px solid var(--border-subtle)',
-                marginBottom: '20px',
+                fontSize: '0.86rem',
+                color: 'var(--text-main)',
+                lineHeight: 1.5,
+                paddingBottom: '16px',
+                borderBottom: '1px solid var(--border-subtle)',
+                marginBottom: '16px',
               }}>
-                <div style={{ fontWeight: 700, fontSize: '0.92rem', marginBottom: '2px' }}>
-                  Cinepolis · Nexus Shantiniketan
-                </div>
-                <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)', marginBottom: '8px' }}>
+                <div style={{ fontWeight: 700 }}>Cinepolis · Nexus Shantiniketan</div>
+                <div style={{ color: 'var(--text-muted)', fontSize: '0.82rem' }}>
                   Whitefield, Bengaluru · Screen 03
                 </div>
-                <div style={{ fontSize: '0.85rem', color: 'var(--gold)', fontWeight: 600 }}>
+                <div style={{ marginTop: '6px', fontWeight: 600 }}>
                   Fri, 16 Oct 2026 · 7:30 PM
                 </div>
-                <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                  {seatsSummary} · {seatsCount} {isPremium ? 'Premium' : 'Standard'} seat(s)
+                <div style={{ color: 'var(--teal-primary)', fontWeight: 600, marginTop: '4px' }}>
+                  {seatsSummary} · 2 Premium seats
                 </div>
               </div>
 
               {/* Price Breakdown */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.86rem', marginBottom: '18px' }}>
+              <div style={{
+                fontSize: '0.86rem',
+                lineHeight: 1.8,
+                paddingBottom: '16px',
+                borderBottom: '1px solid var(--border-subtle)',
+                marginBottom: '16px',
+              }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>Tickets ({seatsCount} × ₹{isPremium ? '320' : '220'})</span>
-                  <span style={{ fontWeight: 600 }}>₹{ticketSubtotal > 0 ? ticketSubtotal.toFixed(2) : '640.00'}</span>
+                  <span style={{ color: 'var(--text-muted)' }}>Tickets (2 × ₹320)</span>
+                  <span style={{ fontWeight: 600 }}>₹{ticketsSubtotalDisplay}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--text-muted)' }}>Convenience fee</span>
-                  <span>₹{convenienceFee > 0 ? convenienceFee.toFixed(2) : '40.00'}</span>
+                  <span style={{ fontWeight: 600 }}>₹{convenienceFee > 0 ? convenienceFee.toFixed(2) : '40.00'}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--text-muted)' }}>GST on fee (18%)</span>
-                  <span>₹{gstOnFee > 0 ? gstOnFee.toFixed(2) : '7.20'}</span>
-                </div>
-                {promoApplied && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--gold)' }}>
-                    <span>Promo discount</span>
-                    <span>-₹50.00</span>
-                  </div>
-                )}
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  paddingTop: '12px',
-                  borderTop: '1px solid var(--border-subtle)',
-                  fontWeight: 800,
-                  fontSize: '1.15rem',
-                  color: 'var(--gold)',
-                }}>
-                  <span>Total amount</span>
-                  <span>₹{totalAmount > 0 ? (promoApplied ? totalAmount - 50 : totalAmount).toFixed(2) : '687.20'}</span>
+                  <span style={{ fontWeight: 600 }}>₹{gstOnFee > 0 ? gstOnFee.toFixed(2) : '7.20'}</span>
                 </div>
               </div>
 
-              {/* Cancellation Policy Banner */}
+              {/* Total Amount */}
               <div style={{
-                background: 'rgba(255, 255, 255, 0.03)',
-                borderRadius: '8px',
-                padding: '12px 14px',
-                border: '1px solid var(--border-subtle)',
-                fontSize: '0.76rem',
-                color: 'var(--text-dim)',
-                lineHeight: 1.5,
+                display: 'flex',
+                alignItems: 'baseline',
+                justifyContent: 'space-between',
+                marginBottom: '18px',
               }}>
-                <div style={{ fontWeight: 600, color: 'var(--text-muted)', marginBottom: '3px' }}>
-                  Plans can change. We understand.
-                </div>
-                Cancel before 5:30 PM on 16 Oct for a refund of the ₹{ticketSubtotal > 0 ? ticketSubtotal : '640'} ticket amount. Convenience fee and GST are non-refundable.
+                <span style={{ fontSize: '1.05rem', fontWeight: 700 }}>Total amount</span>
+                <span style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--text-main)' }}>
+                  ₹{totalDisplay}
+                </span>
               </div>
 
-              <div style={{ textAlign: 'center', marginTop: '16px' }}>
-                <Link to="/support" style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textDecoration: 'underline' }}>
-                  Payment trouble? We're here to help.
-                </Link>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                background: 'var(--teal-soft)',
+                color: 'var(--teal-primary)',
+                fontSize: '0.78rem',
+                fontWeight: 600,
+                padding: '6px 12px',
+                borderRadius: 'var(--radius-sm)',
+              }}>
+                <ShieldCheck size={15} />
+                <span>Secure, encrypted payment</span>
               </div>
             </div>
+
+            {/* Promo Code Card */}
+            <div className="card" style={{ padding: '20px', marginBottom: '16px' }}>
+              <h4 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '10px' }}>
+                Have a promo code?
+              </h4>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <input
+                  type="text"
+                  placeholder="Enter code"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value)}
+                  style={{
+                    flex: 1,
+                    border: '1px solid var(--border-medium)',
+                    borderRadius: 'var(--radius-md)',
+                    padding: '8px 12px',
+                    fontSize: '0.86rem',
+                    background: 'var(--bg-card)',
+                    color: 'var(--text-main)',
+                    outline: 'none',
+                  }}
+                />
+                <button
+                  onClick={handleApplyPromo}
+                  className="btn-outline"
+                  style={{ padding: '8px 16px', fontSize: '0.84rem' }}
+                >
+                  Apply
+                </button>
+              </div>
+              {promoApplied && (
+                <div style={{ color: 'var(--teal-primary)', fontSize: '0.78rem', marginTop: '6px', fontWeight: 600 }}>
+                  ✓ Promo SMART50 applied!
+                </div>
+              )}
+            </div>
+
+            {/* Support link */}
+            <button
+              onClick={() => navigate('/support')}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                width: '100%',
+                fontSize: '0.84rem',
+                color: 'var(--teal-primary)',
+                fontWeight: 600,
+                padding: '8px',
+              }}
+            >
+              <Headphones size={15} />
+              <span>Payment trouble? We're here to help.</span>
+            </button>
           </div>
         </div>
       </div>

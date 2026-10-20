@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { api } from '../services/api';
 import {
@@ -7,17 +7,18 @@ import {
   Sparkles,
   Send,
   CheckCircle2,
-  AlertCircle,
   Clock,
   ShieldCheck,
   Tag,
-  HelpCircle,
-  FileText
+  Headphones,
+  FileText,
+  AlertCircle
 } from 'lucide-react';
 
 export default function SupportPage() {
   const { user } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [bookingRef, setBookingRef] = useState(location.state?.relatedBookingRef || 'ST-261016-0842');
   const [subject, setSubject] = useState('Duplicate debit');
@@ -27,83 +28,57 @@ export default function SupportPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
-  const [myTickets, setMyTickets] = useState([]);
 
-  // Live AI Triage Assistant simulation while typing
+  // Live simulated AI prediction matching prototype
   const [aiPreview, setAiPreview] = useState({
-    category: 'Payment',
+    category: 'Payment & billing',
     confidence: '98.4%',
     sentiment: 'Negative',
     priority: 'High',
     department: 'Finance & Payments',
-    reason: "Keyword 'twice' and 'refund' detected — financial transaction impact",
+    reason: 'Duplicate payment detected with refund request; requires gateway verification before debit reversal.',
   });
 
-  // Dynamic preview update based on text
   useEffect(() => {
     const text = (subject + ' ' + description).toLowerCase();
-    if (text.includes('refund') || text.includes('upi') || text.includes('payment') || text.includes('twice') || text.includes('debit')) {
+    if (text.includes('refund') || text.includes('upi') || text.includes('twice') || text.includes('debit') || text.includes('payment')) {
       setAiPreview({
-        category: 'Payment',
+        category: 'Payment & billing',
         confidence: '98.4%',
         sentiment: 'Negative',
         priority: 'High',
         department: 'Finance & Payments',
-        reason: "Keyword 'twice' and 'refund' detected — financial transaction impact",
+        reason: 'Duplicate payment detected with refund request; requires gateway verification before debit reversal.',
       });
-    } else if (text.includes('seat') || text.includes('wheelchair') || text.includes('row')) {
+    } else if (text.includes('wheelchair') || text.includes('seat') || text.includes('ramp') || text.includes('access')) {
       setAiPreview({
-        category: 'Seating',
+        category: 'Accessibility',
         confidence: '96.2%',
         sentiment: 'Neutral',
         priority: 'Medium',
         department: 'Theater Operations',
-        reason: 'Accessibility or seat allocation request',
+        reason: 'Accessibility assistance requested for auditorium entrance.',
       });
-    } else if (text.includes('cancel') || text.includes('ticket') || text.includes('booking') || text.includes('confirm')) {
+    } else if (text.includes('sound') || text.includes('great') || text.includes('imax') || text.includes('staff')) {
       setAiPreview({
-        category: 'Booking',
+        category: 'Feedback',
+        confidence: '96.2%',
+        sentiment: 'Positive',
+        priority: 'Low',
+        department: 'Customer Experience',
+        reason: 'Customer praise and screening quality review.',
+      });
+    } else {
+      setAiPreview({
+        category: 'Booking issue',
         confidence: '96.2%',
         sentiment: 'Negative',
         priority: 'High',
         department: 'Booking Operations',
-        reason: 'Ticket confirmation or reservation issue',
-      });
-    } else if (text.includes('sound') || text.includes('screen') || text.includes('imax') || text.includes('great') || text.includes('good')) {
-      setAiPreview({
-        category: 'Booking',
-        confidence: '70.0%',
-        sentiment: 'Positive',
-        priority: 'Low',
-        department: 'Customer Experience',
-        reason: 'Audience feedback and theater appreciation',
-      });
-    } else {
-      setAiPreview({
-        category: 'Technical Issues',
-        confidence: '82.0%',
-        sentiment: 'Neutral',
-        priority: 'Medium',
-        department: 'IT & Digital Support',
-        reason: 'General inquiry',
+        reason: 'Ticket delivery or seat reservation discrepancy.',
       });
     }
   }, [subject, description]);
-
-  // Load customer's tickets
-  useEffect(() => {
-    async function loadTickets() {
-      try {
-        const data = await api.getMyTickets();
-        if (data && data.length > 0) {
-          setMyTickets(data);
-        }
-      } catch (err) {
-        console.warn('Could not load existing tickets:', err);
-      }
-    }
-    loadTickets();
-  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -124,14 +99,8 @@ export default function SupportPage() {
         customer_email: user?.email || 'arjun.shah@gmail.com',
       };
 
-      const res = await api.submitTicket(payload);
-      setSubmitSuccess(res);
-      setMyTickets((prev) => [res, ...prev]);
-    } catch (err) {
-      console.warn('Backend ticket API failed:', err);
-      // Fallback local response so demo is 100% resilient
-      const mock = {
-        reference: 'ST-1049',
+      let ticketData = {
+        reference: 'ST-1048',
         subject,
         description,
         predicted_category: aiPreview.category,
@@ -139,11 +108,19 @@ export default function SupportPage() {
         sentiment: aiPreview.sentiment,
         priority: aiPreview.priority,
         assigned_department: aiPreview.department,
-        status: 'Open',
-        created_at: new Date().toISOString(),
+        status: 'In progress',
       };
-      setSubmitSuccess(mock);
-      setMyTickets((prev) => [mock, ...prev]);
+
+      try {
+        const res = await api.submitTicket(payload);
+        if (res && res.reference) {
+          ticketData = res;
+        }
+      } catch (backendErr) {
+        console.warn('Backend ticket API fallback to prototype simulation:', backendErr);
+      }
+
+      setSubmitSuccess(ticketData);
     } finally {
       setIsSubmitting(false);
     }
@@ -151,73 +128,81 @@ export default function SupportPage() {
 
   return (
     <div style={{ paddingBottom: '80px' }}>
-      <div className="container" style={{ maxWidth: '1080px', margin: '40px auto 0' }}>
-        {/* Header */}
-        <div style={{ marginBottom: '36px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--ai-primary)', marginBottom: '8px' }}>
-            <Sparkles size={18} />
-            <span style={{ fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-              Intelligent Support Hub
-            </span>
-          </div>
-          <h1 style={{ fontSize: '2.4rem', fontWeight: 800, marginBottom: '8px' }}>
-            Every ticket, understood.
-          </h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1rem', maxWidth: '640px' }}>
-            Submit your support inquiry below. Our integrated machine learning triage engine immediately categorizes, assesses priority, and routes your request to the right department.
-          </p>
+      {/* ── HEADER SECTION ── */}
+      <div className="container" style={{ marginTop: '36px', marginBottom: '32px' }}>
+        <div style={{
+          color: 'var(--teal-primary)',
+          fontSize: '0.78rem',
+          fontWeight: 700,
+          letterSpacing: '0.06em',
+          textTransform: 'uppercase',
+          marginBottom: '6px',
+        }}>
+          CUSTOMER EXPERIENCE & SUPPORT
         </div>
+        <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '6px' }}>
+          Every ticket, understood.
+        </h1>
+        <p style={{ fontSize: '0.94rem', color: 'var(--text-muted)', maxWidth: '620px' }}>
+          Our intelligent support hub automatically triages your request, predicts the required department, and notifies cinema staff instantly.
+        </p>
+      </div>
 
-        {submitSuccess && (
-          <div className="glass-panel" style={{
-            padding: '24px',
-            marginBottom: '32px',
-            background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(24, 32, 50, 0.9))',
-            border: '1px solid var(--success)',
+      {/* Success Notification if submitted */}
+      {submitSuccess && (
+        <div className="container" style={{ marginBottom: '24px' }}>
+          <div style={{
+            background: 'var(--success-soft)',
+            border: '1px solid var(--success-border)',
+            borderRadius: 'var(--radius-lg)',
+            padding: '20px 24px',
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '14px',
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#6ee7b7', marginBottom: '8px' }}>
-              <CheckCircle2 size={20} />
-              <h3 style={{ fontSize: '1.15rem', fontWeight: 700 }}>
-                Ticket #{submitSuccess.reference || 'ST-1049'} Submitted Successfully!
+            <CheckCircle2 size={22} color="var(--success-text)" style={{ flexShrink: 0, marginTop: '2px' }} />
+            <div style={{ flex: 1 }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--success-text)', marginBottom: '4px' }}>
+                Ticket #{submitSuccess.reference} Logged & Triaged Successfully!
               </h3>
-            </div>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '14px' }}>
-              Your ticket has been logged and assigned to <strong>{submitSuccess.assigned_department || 'Finance & Payments'}</strong>.
-            </p>
-
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-              <span className="badge badge-ai">
-                Predicted: {submitSuccess.predicted_category || 'Payment'} ({((submitSuccess.prediction_confidence || 0.984) * 100).toFixed(1)}%)
-              </span>
-              <span className="badge badge-danger">
-                Priority: {submitSuccess.priority || 'High'}
-              </span>
-              <span className="badge badge-info">
-                Status: {submitSuccess.status || 'Open'}
-              </span>
-            </div>
-
-            <div style={{ marginTop: '16px' }}>
-              <Link to="/staff/tickets" className="btn-ai" style={{ fontSize: '0.86rem', padding: '8px 16px' }}>
-                View in Staff Workspace Queue →
-              </Link>
+              <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)', marginBottom: '12px' }}>
+                Assigned to <strong>{submitSuccess.assigned_department}</strong> with {submitSuccess.priority} priority.
+              </p>
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+                <span className="badge-pill badge-teal">{submitSuccess.predicted_category}</span>
+                <span className="badge-pill badge-danger">{submitSuccess.priority} Priority</span>
+                <span className="badge-pill badge-neutral">Status: {submitSuccess.status}</span>
+                <button
+                  onClick={() => navigate('/staff/tickets')}
+                  className="btn-navy"
+                  style={{ padding: '6px 14px', fontSize: '0.8rem', marginLeft: '8px' }}
+                >
+                  View in Staff Workspace Queue →
+                </button>
+              </div>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.4fr) minmax(320px, 1fr)', gap: '32px' }}>
-          {/* ── LEFT: TICKET SUBMISSION FORM ── */}
-          <div className="glass-panel" style={{ padding: '32px' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <FileText size={18} color="var(--gold)" />
+      {/* ── MAIN 2 COLUMN LAYOUT ── */}
+      <div className="container">
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1.2fr 1fr',
+          gap: '32px',
+          alignItems: 'start',
+        }}>
+          {/* Left Column: Ticket Submission Form */}
+          <div className="card" style={{ padding: '32px' }}>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '20px' }}>
               Submit a support ticket
-            </h2>
+            </h3>
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              {/* Booking reference */}
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
               <div>
-                <label style={{ fontSize: '0.82rem', color: 'var(--text-dim)', display: 'block', marginBottom: '6px' }}>
-                  Related Booking Reference (Optional)
+                <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '6px' }}>
+                  Related Booking Reference
                 </label>
                 <input
                   type="text"
@@ -226,19 +211,19 @@ export default function SupportPage() {
                   placeholder="e.g. ST-261016-0842"
                   style={{
                     width: '100%',
-                    padding: '12px 14px',
-                    background: 'var(--bg-primary)',
                     border: '1px solid var(--border-medium)',
-                    borderRadius: '8px',
-                    color: 'var(--text-main)',
+                    borderRadius: 'var(--radius-md)',
+                    padding: '10px 14px',
                     fontSize: '0.9rem',
+                    background: 'var(--bg-card)',
+                    color: 'var(--text-main)',
+                    outline: 'none',
                   }}
                 />
               </div>
 
-              {/* Subject */}
               <div>
-                <label style={{ fontSize: '0.82rem', color: 'var(--text-dim)', display: 'block', marginBottom: '6px' }}>
+                <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '6px' }}>
                   Subject *
                 </label>
                 <input
@@ -249,174 +234,124 @@ export default function SupportPage() {
                   placeholder="Summary of issue"
                   style={{
                     width: '100%',
-                    padding: '12px 14px',
-                    background: 'var(--bg-primary)',
                     border: '1px solid var(--border-medium)',
-                    borderRadius: '8px',
-                    color: 'var(--text-main)',
+                    borderRadius: 'var(--radius-md)',
+                    padding: '10px 14px',
                     fontSize: '0.9rem',
+                    background: 'var(--bg-card)',
+                    color: 'var(--text-main)',
+                    outline: 'none',
                   }}
                 />
               </div>
 
-              {/* Description */}
               <div>
-                <label style={{ fontSize: '0.82rem', color: 'var(--text-dim)', display: 'block', marginBottom: '6px' }}>
-                  Description / Inquiry *
+                <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '6px' }}>
+                  Description *
                 </label>
                 <textarea
+                  rows={4}
                   required
-                  rows={5}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Explain what happened in detail..."
+                  placeholder="Detailed description of your issue..."
                   style={{
                     width: '100%',
-                    padding: '12px 14px',
-                    background: 'var(--bg-primary)',
                     border: '1px solid var(--border-medium)',
-                    borderRadius: '8px',
-                    color: 'var(--text-main)',
+                    borderRadius: 'var(--radius-md)',
+                    padding: '10px 14px',
                     fontSize: '0.9rem',
+                    background: 'var(--bg-card)',
+                    color: 'var(--text-main)',
+                    outline: 'none',
                     lineHeight: 1.5,
-                    resize: 'vertical',
                   }}
                 />
               </div>
 
-              {/* Submit Button */}
+              {errorMsg && (
+                <div style={{ color: 'var(--danger)', fontSize: '0.84rem' }}>
+                  {errorMsg}
+                </div>
+              )}
+
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="btn-primary"
-                style={{ padding: '14px', fontSize: '1rem', marginTop: '10px' }}
+                className="btn-navy"
+                style={{ padding: '12px', fontSize: '0.92rem', marginTop: '6px' }}
               >
-                <Send size={16} />
-                {isSubmitting ? 'Analyzing & submitting...' : 'Submit ticket to triage'}
+                <Send size={15} />
+                <span>Submit ticket with AI Triage</span>
               </button>
             </form>
           </div>
 
-          {/* ── RIGHT: LIVE AI TRIAGE PREVIEW WIDGET ── */}
-          <div>
-            <div className="glass-panel" style={{
-              padding: '28px',
-              position: 'sticky',
-              top: '90px',
-              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(24, 32, 50, 0.95))',
-              border: '1px solid rgba(139, 92, 246, 0.3)',
+          {/* Right Column: Real-time AI Triage Card */}
+          <div className="card" style={{ padding: '32px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+              <Sparkles size={20} color="var(--teal-primary)" />
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 800 }}>Live AI triage preview</h3>
+            </div>
+
+            <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '20px' }}>
+              As you type, our ML classification model estimates ticket parameters in real-time before customer experience staff review:
+            </p>
+
+            {/* AI Predictions Box */}
+            <div style={{
+              background: 'var(--bg-secondary)',
+              borderRadius: 'var(--radius-md)',
+              padding: '18px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '12px',
+              marginBottom: '20px',
+              fontSize: '0.86rem',
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#c4b5fd' }}>
-                  <Sparkles size={16} />
-                  <span style={{ fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase' }}>
-                    AI Triage Assistant
-                  </span>
-                </div>
-                <span className="badge badge-ai" style={{ fontSize: '0.7rem' }}>
-                  LIVE PREVIEW
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Predicted Category</span>
+                <span style={{ fontWeight: 700, color: 'var(--teal-primary)' }}>
+                  {aiPreview.category} ({aiPreview.confidence})
                 </span>
               </div>
 
-              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '6px' }}>
-                Real-time Ticket Analysis
-              </h3>
-              <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: '20px' }}>
-                As you type, the NLP classifier extracts keywords, predicts the category, and calculates priority score.
-              </p>
-
-              {/* Predictions list */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                <div style={{
-                  background: 'var(--bg-primary)',
-                  padding: '12px 14px',
-                  borderRadius: '8px',
-                  border: '1px solid var(--border-subtle)',
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Detected Sentiment</span>
+                <span style={{
+                  fontWeight: 700,
+                  color:
+                    aiPreview.sentiment === 'Negative'
+                      ? 'var(--danger)'
+                      : aiPreview.sentiment === 'Positive'
+                      ? 'var(--teal-primary)'
+                      : 'var(--text-main)',
                 }}>
-                  <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)', textTransform: 'uppercase', marginBottom: '2px' }}>
-                    PREDICTED CATEGORY
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ fontWeight: 700, color: 'var(--text-main)', fontSize: '0.95rem' }}>
-                      {aiPreview.category}
-                    </span>
-                    <span className="badge badge-ai">{aiPreview.confidence}</span>
-                  </div>
-                </div>
-
-                <div style={{
-                  background: 'var(--bg-primary)',
-                  padding: '12px 14px',
-                  borderRadius: '8px',
-                  border: '1px solid var(--border-subtle)',
-                }}>
-                  <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)', textTransform: 'uppercase', marginBottom: '2px' }}>
-                    DETECTED SENTIMENT & PRIORITY
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
-                    <span className={`badge ${aiPreview.sentiment === 'Negative' ? 'badge-danger' : aiPreview.sentiment === 'Positive' ? 'badge-success' : 'badge-info'}`}>
-                      {aiPreview.sentiment}
-                    </span>
-                    <span className={`badge ${aiPreview.priority === 'High' ? 'badge-danger' : 'badge-warning'}`}>
-                      {aiPreview.priority} Priority
-                    </span>
-                  </div>
-                </div>
-
-                <div style={{
-                  background: 'var(--bg-primary)',
-                  padding: '12px 14px',
-                  borderRadius: '8px',
-                  border: '1px solid var(--border-subtle)',
-                }}>
-                  <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)', textTransform: 'uppercase', marginBottom: '2px' }}>
-                    ASSIGNED ROUTING DEPARTMENT
-                  </div>
-                  <div style={{ fontWeight: 700, color: 'var(--gold)', fontSize: '0.92rem', marginTop: '2px' }}>
-                    {aiPreview.department}
-                  </div>
-                  <div style={{ fontSize: '0.74rem', color: 'var(--text-dim)', marginTop: '4px' }}>
-                    {aiPreview.reason}
-                  </div>
-                </div>
+                  {aiPreview.sentiment}
+                </span>
               </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Priority Level</span>
+                <span style={{
+                  fontWeight: 700,
+                  color: aiPreview.priority === 'High' ? 'var(--danger)' : 'var(--text-main)',
+                }}>
+                  {aiPreview.priority}
+                </span>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Assigned Department</span>
+                <span style={{ fontWeight: 700 }}>{aiPreview.department}</span>
+              </div>
+            </div>
+
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)', lineHeight: 1.45 }}>
+              💡 <em>{aiPreview.reason}</em>
             </div>
           </div>
         </div>
-
-        {/* Customer Ticket History */}
-        {myTickets.length > 0 && (
-          <div style={{ marginTop: '50px' }}>
-            <h2 style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: '18px' }}>
-              Your Recent Support Tickets
-            </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              {myTickets.map((t) => (
-                <div key={t.reference || t.id} className="glass-panel" style={{ padding: '20px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <span style={{ fontWeight: 800, color: 'var(--gold)', fontSize: '0.95rem' }}>
-                        #{t.reference || 'ST-1048'}
-                      </span>
-                      <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>{t.subject}</span>
-                    </div>
-                    <span className={`badge ${t.status === 'Resolved' ? 'badge-success' : 'badge-warning'}`}>
-                      {t.status || 'Open'}
-                    </span>
-                  </div>
-                  <p style={{ color: 'var(--text-muted)', fontSize: '0.86rem', marginBottom: '10px' }}>
-                    {t.description}
-                  </p>
-                  <div style={{ display: 'flex', gap: '12px', fontSize: '0.78rem', color: 'var(--text-dim)' }}>
-                    <span>Category: <strong>{t.predicted_category}</strong></span>
-                    <span>·</span>
-                    <span>Department: <strong>{t.assigned_department}</strong></span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

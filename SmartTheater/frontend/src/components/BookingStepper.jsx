@@ -1,7 +1,7 @@
 import React from 'react';
 import { Check } from 'lucide-react';
 
-export default function BookingStepper({ currentStep = 1 }) {
+export default function BookingStepper({ currentStep = 2 }) {
   const steps = [
     { num: 1, label: 'Choose showtime' },
     { num: 2, label: 'Select seats' },
@@ -14,10 +14,10 @@ export default function BookingStepper({ currentStep = 1 }) {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      gap: '24px',
-      margin: '20px auto 30px',
-      maxWidth: '720px',
-      padding: '0 16px',
+      gap: '14px',
+      margin: '28px auto 36px',
+      maxWidth: '780px',
+      padding: '0 20px',
     }}>
       {steps.map((s, idx) => {
         const isDone = s.num < currentStep;
@@ -27,29 +27,33 @@ export default function BookingStepper({ currentStep = 1 }) {
           <React.Fragment key={s.num}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <div style={{
-                width: '28px',
-                height: '28px',
+                width: '24px',
+                height: '24px',
                 borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '0.82rem',
+                fontSize: '0.78rem',
                 fontWeight: 700,
                 background: isDone
-                  ? 'var(--gold)'
+                  ? 'var(--teal-primary)'
                   : isActive
-                  ? 'var(--gold)'
-                  : 'var(--bg-card)',
-                color: isDone || isActive ? '#0f172a' : 'var(--text-dim)',
+                  ? 'var(--btn-navy-bg)'
+                  : 'transparent',
+                color: isDone
+                  ? '#ffffff'
+                  : isActive
+                  ? 'var(--btn-navy-text)'
+                  : 'var(--text-dim)',
                 border: isDone || isActive
                   ? 'none'
-                  : '1px solid var(--border-medium)',
-                boxShadow: isActive ? '0 0 12px var(--gold-glow)' : 'none',
+                  : '1.5px solid var(--border-medium)',
+                transition: 'all 0.2s ease',
               }}>
-                {isDone ? <Check size={16} strokeWidth={3} /> : s.num}
+                {isDone ? <Check size={14} strokeWidth={2.8} /> : s.num}
               </div>
               <span style={{
-                fontSize: '0.86rem',
+                fontSize: '0.88rem',
                 fontWeight: isActive ? 600 : 500,
                 color: isActive ? 'var(--text-main)' : isDone ? 'var(--text-muted)' : 'var(--text-dim)',
                 whiteSpace: 'nowrap',
@@ -61,9 +65,11 @@ export default function BookingStepper({ currentStep = 1 }) {
             {idx < steps.length - 1 && (
               <div style={{
                 flex: 1,
-                height: '2px',
-                background: isDone ? 'var(--gold)' : 'var(--border-subtle)',
-                transition: 'background 0.3s',
+                minWidth: '24px',
+                maxWidth: '60px',
+                height: '1px',
+                background: isDone ? 'var(--teal-primary)' : 'var(--border-subtle)',
+                transition: 'background 0.25s ease',
               }} />
             )}
           </React.Fragment>
