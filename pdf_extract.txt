@@ -1,0 +1,674 @@
+﻿Pages: 1
+
+--- PAGE 1 ---
+SmartTheater
+STAFF WORKSPACE
+Overview
+Ticket queue
+My assignments
+Knowledge base
+Settings
+Workspace / Ticket queue
+CINEPOLIS ┬╖ NEXUS SHANTINIKETAN
+Every ticket, understood.
+Review AI triage, route requests and keep movie nights on track.
+Theater tickets today
+High priority
+Awaiting assignment
+AI triage accuracy
+24
+8
+6
+94.2%
+8 fewer than yesterday
+All within response SLA
+AI routing available
++2.1 pts this month
+Create ticket
+Live data
+Fri, 16 Oct 2026
+MN
+Meera Nair
+Customer experience lead
+Sign out ┼á
+Intelligence, built in.
+AI-assisted insights help 
+your team focus on what 
+matters.
+AI engine online
+Ticket queue
+All (24)
+Mine (8)
+TICKET
+PREDICTED CATEGORY
+#ST-1048
+Payment & billing
+Duplicate debit
+98.4% confidence
+Arjun Shah ┬╖ 10:42 AM
+#ST-1047
+Seats not confirmed
+Riya Patel ┬╖ 10:36 AM
+#ST-1046
+Wheelchair access
+Dev Menon ┬╖ 10:21 AM
+#ST-1045
+Feedback
+Excellent sound
+96.2% confidence
+Anika Rao ┬╖ 10:08 AM
+Showing 14 of 24 tickets ┬╖ Updated 11:10 AM
+SENTIMENT
+Negative
+Positive
+AI SUMMARY
+Two UPI debits of ┬╣687.20 for one 
+confirmed booking; requests a refund.
+Praises IMAX sound quality and helpful 
+staff at yesterday╦çs screening.
+Search ticket or customer
+PRIORITY
+DEPARTMENT
+High
+Finance & Payments
+Low
+All priorities
+STATUS
+In progress
+Newest first
+Booking issue
+96.2% confidence
+Negative
+Payment succeeded but seats are missing 
+from the confirmation email.
+High
+Booking Operations
+Open
+Accessibility
+96.2% confidence
+Neutral
+Needs wheelchair access and a 
+companion seat for the evening show.
+Medium
+Theater Operations
+Assigned
+Customer Experience
+Resolved
+ΓÇÖ Previous     1     2     3     4     5     6     Next Γäó
+#ST-1048 ┬╖ Duplicate debit
+Arjun Shah ┬╖ arjun.shah@gmail.com ┬╖ 16 Oct, 10:42 AM
+╦¥My UPI account was debited ┬╣687.20 twice, but I only booked two seats. 
+Please check and refund the duplicate payment.╦¢
+ST-261016-0842 ┬╖ The Last Orbit ┬╖ H7, H8
+upi-payment-receipt.png ┬╖ 284 KB
+Last reply sent by Meera at 11:05 AM ┬╖ Next update due 3:05 PM
+High priority
+AI triage insights
+Human-reviewed
+Customer reports a duplicate UPI charge of ┬╣687.20 on one confirmed booking. Verify 
+gateway transaction IDs before refunding the extra debit.
+Billing ┬╖ 98.4%
+Negative ┬╖ 92.6%
+Refund verification
+ASSIGNED DEPARTMENT
+Finance & Payments
+Reply to customer
+Mark resolved
+TICKET STATUS
+In progress
+SmartTheater
+ADMIN WORKSPACE
+Intelligence, built in.
+AI-assisted insights help 
+your team focus on what 
+matters.
+AI engine online
+Overview
+Movies
+Bookings
+Theaters
+Support analytics
+Settings
+Workspace / Overview
+PLATFORM OVERVIEW
+The big picture.
+A clear view of your movies, bookings and customer experience.
+Total bookings
+Net ticket revenue
+Average occupancy
+1,248
+┬╣7,98,720
+74%
++18.6% vs last week
++12.4% vs last week
++8 pts vs last week
+10 16 Oct 2026
+Revenue overview
+Net ticket revenue ┬╖ 1016 Oct 2026
+┬╣160k
+┬╣80k
+┬╣0
+10 Oct
+11 Oct
+12 Oct
+13 Oct
+14 Oct
+├Å This week
+├Å Last week
+15 Oct
+16 OCT
+┬╣1,57,920
+16 Oct
+Seat occupancy
+Booked seats as a share of available seats
+The Last Orbit
+Velocity
+Midnight in Kyoto
+The Wild Within
+This week
+Live data
+Fri, 16 Oct 2026
+Open support tickets
+48
+12 fewer vs last week
+Export report
+86%
+73%
+65%
+72%
+PM
+Priya Mehta
+Platform administrator
+Sign out ┼á
+Movie management
+4 active movies
+MOVIE
+BOOKINGS
+NET REVENUE
+The Last Orbit
+486
+┬╣3,11,040
+English ┬╖ IMAX 2D
+Velocity
+English ┬╖ Dolby Atmos
+Midnight in Kyoto
+Japanese ┬╖ 2D
+The Wild Within
+202
+┬╣1,29,280
+English ┬╖ 2D
+1,248 bookings ┬╖ Revenue excludes convenience fees and GST ┬╖ Manage titles, showtimes and availability
+OCCUPANCY
+86%
+72%
+STATUS
+Now showing
+Add movie
+312
+┬╣1,99,680
+73%
+248
+┬╣1,58,720
+65%
+Now showing
+Now showing
+Now showing
+Support ticket analytics
+176
+128
+Received
+Resolved
+PREDICTED CATEGORY DISTRIBUTION
+Billing 42%
+Booking 28%
+48
+Open
+Theater 16%
+View report ┼á
+12
+High priority
+Other 14%
+Smarter support, measurable impact
+94.2%
+12 min
+96%
+AI triage accuracy
+First response
+SLA compliance
+CUSTOMER SENTIMENT
+Negative 54%
+Neutral 31%
+Positive 15%
+AI suggests category, sentiment and routing. Staff review every decision before responding.
+01 ┬╖ BOOKING JOURNEY  Home Γäó Movie Details Γäó Seats Γäó Checkout Γäó Confirmation
+SmartTheater
+Movies
+My Bookings
+Support
+Bengaluru
+AS
+Arjun
+NOW SHOWING ┬╖ IMAX EXCLUSIVE
+The Last Orbit
+One final mission. An infinite unknown. A breathtaking journey beyond the 
+edge of our world.
+ 9.1 / 10
+Sci-fi ┬╖ 2h 18m ┬╖ English
+U/A 13+
+Book tickets
+Watch trailer
+Search movies, genres or languages
+Now showing
+4 movies
+IMAX
+╦ÿ K
+ 9.1
+Critics╦ç choice
+All movies
+Sci-fi
+Action
+Drama
+Adventure
+ 8.6
+Dolby Atmos
+ 8.4
+Search
+Family favorite
+View all movies ┼á
+ 8.8
+The Last Orbit
+Midnight in Kyoto
+Sci-fi ┬╖ English ┬╖ U/A 13+
+Drama ┬╖ Japanese ┬╖ U/A 13+
+Picked for your next movie night
+98% MATCH ┬╖ FOR THE BIG SCREEN
+The Last Orbit
+A spectacular new world worth getting lost in.
+Explore showtimes Γäó
+Book now ┬╖ From ┬╣220
+Velocity
+Action ┬╖ English ┬╖ U/A 16+
+94% MATCH ┬╖ YOUR WEEKEND ESCAPE
+The Wild Within
+Find your next adventure, one frame at a time.
+Explore showtimes Γäó
+View details ┬╖ From ┬╣200
+The Wild Within
+Adventure ┬╖ English ┬╖ U
+Inspired by your love of sci-fi & adventure
+A great experience doesn╦çt end at checkout.
+Our intelligent support team is here for bookings, payments and everything in between.
+Get support
+┬⌐ 2026 SmartTheater. A smarter way to experience cinema.
+Privacy policy
+Terms of service
+Help center
+SmartTheater
+Movies
+My Bookings
+Support
+Bengaluru
+AS
+Arjun
+Movies
+The Last Orbit
+NOW SHOWING
+IMAX 2D
+The Last Orbit
+Sci-fi / Adventure ┬╖ English ┬╖ 2h 18m ┬╖ U/A 13+
+9.1 / 10
+2.4K audience ratings
+When a distress signal arrives from the edge of the solar system, a lone astronaut must choose between 
+returning home and uncovering a secret that could change humanity forever.
+Directed by Maya Reynolds ┬╖ With Ethan Cole, Naomi Park & Idris Vale
+Watch trailer
+Add to watchlist
+Find your show
+FRI
+SAT
+16
+17
+OCT
+OCT
+SUN
+18
+OCT
+Cinepolis ┬╖ Nexus Shantiniketan
+Whitefield ┬╖ 3.2 km away ┬╖ Screen 03
+10:45 AM
+2:15 PM
+7:30 PM
+10:45 PM
+Available
+Filling fast
+Available
+Available
+IMAX 2D ┬╖ English ┬╖ Cancellation available up to 2 hours before show
+PVR ┬╖ Phoenix Marketcity
+Mahadevapura ┬╖ 5.8 km away ┬╖ Screen 01
+11:30 AM
+4:00 PM
+8:15 PM
+Available
+Filling fast
+Available
+IMAX 2D ┬╖ English ┬╖ Cancellation available up to 2 hours before show
+MON
+19
+OCT
+TUE
+20
+OCT
+WED
+21
+OCT
+English ┬╖ IMAX 2D
+Bengaluru
+M-ticket
+M-ticket
+YOUR SELECTED SHOW
+Make it a movie night.
+Experience The Last Orbit on the biggest 
+screen, with immersive sound.
+Cinepolis ┬╖ Nexus Shantiniketan
+Whitefield ┬╖ 3.2 km away ┬╖ Screen 03
+Fri, 16 Oct 2026 ┬╖ 7:30 PM
+IMAX 2D ┬╖ English
+Tickets from
+Premium
+┬╣220
+┬╣320
+Select seats
+Choose your seats before completing payment.
+┬⌐ 2026 SmartTheater. A smarter way to experience cinema.
+Privacy policy
+Terms of service
+Help center
+SmartTheater
+Movies
+My Bookings
+Support
+Bengaluru
+AS
+Arjun
+Choose showtime
+Select seats
+Payment
+Your ticket
+
+2
+3
+4
+Choose your favorite spot.
+The Last Orbit ┬╖ Cinepolis, Nexus Shantiniketan ┬╖ Fri, 16 Oct ┬╖ 7:30 PM
+Seats held for 08:42
+Screen 03 ┬╖ IMAX 2D
+A
+B
+C
+D
+E
+F
+G
+H
+J
+K
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+2
+2
+2
+2
+2
+2
+2
+2
+2
+2
+3
+3
+3
+3
+3
+3
+3
+3
+3
+3
+ALL EYES THIS WAY
+STANDARD ┬╖ ┬╣220
+4
+5
+6
+7
+8
+9
+10
+4
+5
+6
+7
+8
+9
+10
+4
+5
+6
+7
+8
+9
+10
+4
+5
+6
+7
+8
+9
+10
+PREMIUM ┬╖ ┬╣320
+4
+5
+6
+7
+8
+9
+10
+4
+5
+6
+7
+8
+9
+10
+4
+5
+6
+7
+8
+9
+10
+4
+5
+6
+7
+8
+9
+10
+4
+5
+6
+7
+8
+9
+10
+4
+5
+6
+7
+8
+9
+10
+Seat numbers run left to right. Your selected seats are together.
+11
+11
+11
+11
+11
+11
+11
+11
+11
+11
+12
+12
+12
+12
+12
+12
+12
+12
+12
+12
+A
+B
+C
+D
+E
+F
+G
+H
+J
+K
+Available
+Selected
+Booked
+Continue to payment ┬╖ ┬╣687.20
+Your seats are reserved while you pay.
+Tickets are non-transferable. Cancellation is available up to 2 
+hours before the show.
+Your evening, reserved.
+The Last Orbit
+U/A 13+ ┬╖ English ┬╖ 2h 18m
+IMAX 2D
+Cinepolis ┬╖ Nexus Shantiniketan
+Whitefield, Bengaluru ┬╖ Screen 03
+Fri, 16 Oct 2026 ┬╖ 7:30 PM
+H7, H8 ┬╖ 2 Premium seats
+Tickets (2 ├ù ┬╣320)
+Convenience fee
+GST on fee (18%)
+Total amount
+┬╣640.00
+┬╣40.00
+┬╣7.20
+┬╣687.20
+┬⌐ 2026 SmartTheater. A smarter way to experience cinema.
+Privacy policy
+Terms of service
+Help center
+SmartTheater
+Movies
+My Bookings
+Support
+Bengaluru
+AS
+Arjun
+Choose showtime
+Select seats
+Payment
+Your ticket
+
+
+3
+4
+One last step to movie night.
+Review your details and pay securely. Your seats H7 & H8 are on hold.
+Seats held for 07:18
+Contact details
+Your digital ticket will be sent to these details.
+Email address
+arjun.shah@gmail.com
+Mobile number
++91 98765 43210
+Signed in as Arjun Shah
+Your evening, reserved.
+The Last Orbit
+U/A 13+ ┬╖ English ┬╖ 2h 18m
+IMAX 2D
+Payment method
+UPI
+UPI ID
+arjun.shah@okhdfcbank
+A payment request will be sent to your UPI app.
+UPI ID verified ┬╖ Arjun Shah
+I agree to the booking terms and cancellation policy. I understand that the convenience fee is non-refundable.
+Pay ┬╣687.20 & confirm booking
+Powered by Razorpay ┬╖ Encrypted payment ┬╖ No card details stored
+Credit / debit card
+Net banking
+100% secure
+Verify
+Have a promo code?
+Enter code
+Cinepolis ┬╖ Nexus Shantiniketan
+Whitefield, Bengaluru ┬╖ Screen 03
+Fri, 16 Oct 2026 ┬╖ 7:30 PM
+H7, H8 ┬╖ 2 Premium seats
+Tickets (2 ├ù ┬╣320)
+┬╣640.00
+Convenience fee
+┬╣40.00
+GST on fee (18%)
+┬╣7.20
+Total amount
+┬╣687.20
+Secure, encrypted payment
+Apply
+Plans can change. We understand.
+Cancel before 5:30 PM on 16 Oct for a refund of the ┬╣640 ticket amount. Convenience fee and GST are non-refundable.
+Payment trouble? We╦çre here to help.
+┬⌐ 2026 SmartTheater. A smarter way to experience cinema.
+Privacy policy
+Terms of service
+Help center
+SmartTheater
+Movies
+My Bookings
+Support
+Bengaluru
+AS
+Arjun
+Choose showtime
+
+YOUR TICKET IS READY
+You╦çre going to the movies!
+Arjun, your seats are confirmed. Here╦çs everything you need for movie night.
+Booking confirmed ┬╖ ST-261016-0842
+Your digital ticket has been sent to arjun.shah@gmail.com and +91 98765 43210.
+
+Select seats
+
+Payment
+
+Your ticket
+CONFIRMED
+The Last Orbit
+English ┬╖ IMAX 2D ┬╖ U/A 13+
+Cinepolis ┬╖ Nexus Shantiniketan
+Whitefield, Bengaluru
+DATE
+SHOWTIME
+Fri, 16 Oct 2026
+7:30 PM
+SCREEN
+SEATS
+03 ┬╖ IMAX
+H7, H8 ┬╖
