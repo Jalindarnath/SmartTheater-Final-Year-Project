@@ -11,8 +11,10 @@ from passlib.context import CryptContext
 
 from app.core.config import settings
 
-# Password hashing context – bcrypt is industry standard
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Password hashing context
+# Using sha256_crypt for Python 3.13 compatibility (bcrypt has a known version issue).
+# In production, switch to bcrypt after resolving the bcrypt/passlib version conflict.
+pwd_context = CryptContext(schemes=["sha256_crypt"], deprecated="auto")
 
 
 def hash_password(plain_password: str) -> str:

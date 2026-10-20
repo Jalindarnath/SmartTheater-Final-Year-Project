@@ -1,0 +1,39 @@
+SmartTheater — Ticket Category Classifier — Training Report
+============================================================
+
+Dataset: Synthetic demonstration data
+Total examples: 90
+Categories: [np.str_('Booking'), np.str_('Discounts'), np.str_('Payment'), np.str_('Refund'), np.str_('Seating'), np.str_('Technical Issues')]
+
+Split: 80% train (72), 20% test (18)
+Random seed: 42 (reproducible)
+
+5-Fold CV Accuracy: 0.678 ± 0.089
+Held-out Test Accuracy: 0.778
+
+Classification Report (Test Set):
+                  precision    recall  f1-score   support
+
+         Booking       0.50      1.00      0.67         3
+       Discounts       1.00      1.00      1.00         3
+         Payment       1.00      0.67      0.80         3
+          Refund       1.00      1.00      1.00         3
+         Seating       1.00      0.67      0.80         3
+Technical Issues       0.50      0.33      0.40         3
+
+        accuracy                           0.78        18
+       macro avg       0.83      0.78      0.78        18
+    weighted avg       0.83      0.78      0.78        18
+
+Confusion Matrix (Test Set):
+[[3 0 0 0 0 0]
+ [0 3 0 0 0 0]
+ [0 0 2 0 0 1]
+ [0 0 0 3 0 0]
+ [1 0 0 0 2 0]
+ [2 0 0 0 0 1]]
+
+LIMITATION NOTE:
+This model was trained on a small synthetic dataset (90 examples).
+Reported metrics should be interpreted with this limitation in mind.
+Performance on real, diverse customer tickets may differ.
