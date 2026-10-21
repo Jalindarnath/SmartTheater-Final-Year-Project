@@ -1,0 +1,17 @@
+{
+  "name": "smarttheater-review4-backend",
+  "version": "1.0.0",
+  "description": "SmartTheater Review 4 Academic Prototype Backend - Movie Booking & AI Triage API",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "seed": "node database/seed.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  }
+}
